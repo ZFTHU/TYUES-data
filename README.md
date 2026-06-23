@@ -72,7 +72,7 @@ TYUES-data 是一款高性能自研文档数据库系统，支持 MySQL、MongoD
 
 ```bash
 # 克隆项目
-git clone https://github.com/YOUR_USERNAME/TYUES-data.git
+git clone https://github.com/ZFTHUE/TYUES-data.git
 cd TYUES-data
 
 # 构建
@@ -182,8 +182,8 @@ TYUES-data/
 
 ## 联系方式
 
-- 提交 Issue: [GitHub Issues](https://github.com/YOUR_USERNAME/TYUES-data/issues)
-- 邮箱: support@tyues.cn
+- 提交 Issue: [GitHub Issues](https://github.com/ZFTHU/TYUES-data/issues)
+- 邮箱: 2636047493@qq.com
 
 ---
 
