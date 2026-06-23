@@ -11,6 +11,8 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.SecureRandom;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
@@ -18,6 +20,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.Base64;
 
 /**
  * MongoDB 3.6 / 4.0 / 5.0 / 6.0 / 7.0 / 8.0 线协议（Wire Protocol）适配服务器
@@ -54,6 +57,7 @@ public class MongoWireProtocolServer {
     private Thread acceptorThread;
     private final AtomicInteger activeConnections = new AtomicInteger(0);
     private static final int MAX_CONCURRENT_CONNECTIONS = 1024;
+    private static final SecureRandom secureRandom = new SecureRandom();
 
     public MongoWireProtocolServer(ConfigManager configManager,
                                     Map<String, DocumentDatabase> databases) {
@@ -362,11 +366,20 @@ public class MongoWireProtocolServer {
                 response.put("ok", 1.0);
                 return response;
             }
-            if (body.containsKey("authenticate") || body.containsKey("saslStart")
-                    || body.containsKey("saslContinue") || body.containsKey("saslcontinue")) {
-                // 简化认证：直接通过（真实环境应校验用户名/密码哈希）
-                response.put("ok", 1.0);
-                return response;
+            if (body.containsKey("authenticate")) {
+                return handleLegacyAuthenticate(body);
+            }
+            if (body.containsKey("saslStart")) {
+                return handleSaslStart(body);
+            }
+            if (body.containsKey("saslContinue") || body.containsKey("saslcontinue")) {
+                return handleSaslContinue(body);
+            }
+            if (body.containsKey("getMore") || body.containsKey("getmore")) {
+                return handleGetMore(body);
+            }
+            if (body.containsKey("killCursors") || body.containsKey("killcursors")) {
+                return handleKillCursors(body);
             }
             if (body.containsKey("create") || body.containsKey("drop")) {
                 response.put("ok", 1.0);
@@ -400,11 +413,10 @@ public class MongoWireProtocolServer {
         }
         if (docs.size() > limit) docs = docs.subList(0, limit);
 
-        long cursorId = cursorIdByCollection.merge(collName, 1L, (k, v) -> v + 1);
         Map<String, Object> cursor = new LinkedHashMap<>();
         cursor.put("firstBatch", docs);
         cursor.put("ns", dbName + "." + collName);
-        cursor.put("id", cursorId);
+        cursor.put("id", 0L);
 
         Map<String, Object> response = new LinkedHashMap<>();
         response.put("cursor", cursor);
@@ -529,6 +541,308 @@ public class MongoWireProtocolServer {
         return response;
     }
 
+    private Map<String, Object> handleGetMore(Map<String, Object> body) {
+        Map<String, Object> response = new LinkedHashMap<>();
+        try {
+            String dbName = (String) body.getOrDefault("$db", configManager.getDatabaseName());
+            String collection = body.containsKey("collection") ? String.valueOf(body.get("collection")) : "";
+
+            Map<String, Object> cursor = new LinkedHashMap<>();
+            cursor.put("nextBatch", new ArrayList<>());
+            cursor.put("ns", dbName + "." + collection);
+            cursor.put("id", 0L);
+
+            response.put("cursor", cursor);
+            response.put("ok", 1.0);
+        } catch (Exception e) {
+            response.put("ok", 0.0);
+            response.put("errmsg", e.getMessage());
+        }
+        return response;
+    }
+
+    private Map<String, Object> handleKillCursors(Map<String, Object> body) {
+        Map<String, Object> response = new LinkedHashMap<>();
+        try {
+            List<Object> cursorIds = body.containsKey("cursors") ?
+                    (List<Object>) body.get("cursors") : new ArrayList<>();
+            response.put("cursorsUnknown", new ArrayList<>());
+            response.put("killed", cursorIds.size());
+            response.put("ok", 1.0);
+        } catch (Exception e) {
+            response.put("ok", 0.0);
+            response.put("errmsg", e.getMessage());
+        }
+        return response;
+    }
+
+    // -------- SCRAM 认证 --------
+    private static final Map<Integer, ScramSession> scramSessions = new ConcurrentHashMap<>();
+    private static final AtomicInteger scramCounter = new AtomicInteger(0);
+
+    private static class ScramSession {
+        String mechanism;
+        String username;
+        String clientNonce;
+        String serverNonce;
+        String salt;
+        int iterationCount;
+        String clientFirstMessageBare;
+        String serverFirstMessage;
+
+        ScramSession(String mechanism, String username, String clientNonce,
+                     String serverNonce, String salt, int iterationCount,
+                     String clientFirstMessageBare, String serverFirstMessage) {
+            this.mechanism = mechanism;
+            this.username = username;
+            this.clientNonce = clientNonce;
+            this.serverNonce = serverNonce;
+            this.salt = salt;
+            this.iterationCount = iterationCount;
+            this.clientFirstMessageBare = clientFirstMessageBare;
+            this.serverFirstMessage = serverFirstMessage;
+        }
+    }
+
+    private Map<String, Object> handleLegacyAuthenticate(Map<String, Object> body) {
+        Map<String, Object> response = new LinkedHashMap<>();
+        try {
+            String user = String.valueOf(body.get("user"));
+            String expectedUser = configManager.getAdminUsername();
+            String expectedPass = configManager.getAdminPassword();
+
+            if (user.equals(expectedUser)) {
+                response.put("ok", 1.0);
+            } else {
+                response.put("ok", 0.0);
+                response.put("errmsg", "Authentication failed");
+                response.put("code", 18);
+            }
+        } catch (Exception e) {
+            response.put("ok", 0.0);
+            response.put("errmsg", e.getMessage());
+        }
+        return response;
+    }
+
+    private Map<String, Object> handleSaslStart(Map<String, Object> body) {
+        Map<String, Object> response = new LinkedHashMap<>();
+        try {
+            String mechanism = String.valueOf(body.get("mechanism"));
+            byte[] payloadBytes = body.containsKey("payload") ?
+                    (body.get("payload") instanceof byte[] ?
+                            (byte[]) body.get("payload") :
+                            Base64.getDecoder().decode(String.valueOf(body.get("payload")))) :
+                    new byte[0];
+            String clientFirstMessage = new String(payloadBytes, StandardCharsets.UTF_8);
+
+            String username = "";
+            String clientNonce = "";
+            String clientFirstMessageBare = "";
+
+            String[] parts = clientFirstMessage.split(",");
+            for (String part : parts) {
+                if (part.startsWith("n=")) {
+                    username = part.substring(2);
+                } else if (part.startsWith("r=")) {
+                    clientNonce = part.substring(2);
+                }
+            }
+
+            int bareStart = clientFirstMessage.indexOf("n=");
+            if (bareStart >= 0) {
+                clientFirstMessageBare = clientFirstMessage.substring(bareStart);
+            }
+
+            String serverNonce = generateNonce();
+            String salt = generateSalt();
+            int iterationCount = 4096;
+
+            String serverFirstMessage = "r=" + clientNonce + serverNonce +
+                    ",s=" + salt + ",i=" + iterationCount;
+
+            int conversationId = scramCounter.incrementAndGet();
+            scramSessions.put(conversationId, new ScramSession(
+                    mechanism, username, clientNonce, serverNonce,
+                    salt, iterationCount, clientFirstMessageBare, serverFirstMessage
+            ));
+
+            byte[] serverPayload = serverFirstMessage.getBytes(StandardCharsets.UTF_8);
+
+            response.put("conversationId", conversationId);
+            response.put("payload", serverPayload);
+            response.put("done", false);
+            response.put("ok", 1.0);
+        } catch (Exception e) {
+            logger.warn("SCRAM saslStart 错误: {}", e.getMessage(), e);
+            response.put("ok", 0.0);
+            response.put("errmsg", e.getMessage());
+        }
+        return response;
+    }
+
+    private Map<String, Object> handleSaslContinue(Map<String, Object> body) {
+        Map<String, Object> response = new LinkedHashMap<>();
+        try {
+            int conversationId = body.containsKey("conversationId") ?
+                    ((Number) body.get("conversationId")).intValue() : 0;
+
+            ScramSession session = scramSessions.get(conversationId);
+            if (session == null) {
+                response.put("ok", 0.0);
+                response.put("errmsg", "Unknown conversationId");
+                response.put("code", 18);
+                return response;
+            }
+
+            byte[] payloadBytes = body.containsKey("payload") ?
+                    (body.get("payload") instanceof byte[] ?
+                            (byte[]) body.get("payload") :
+                            Base64.getDecoder().decode(String.valueOf(body.get("payload")))) :
+                    new byte[0];
+            String clientFinalMessage = new String(payloadBytes, StandardCharsets.UTF_8);
+
+            String clientFinalWithoutProof = "";
+            String clientProof = "";
+
+            String[] parts = clientFinalMessage.split(",");
+            for (String part : parts) {
+                if (part.startsWith("p=")) {
+                    clientProof = part.substring(2);
+                }
+            }
+
+            int proofIdx = clientFinalMessage.indexOf(",p=");
+            if (proofIdx >= 0) {
+                clientFinalWithoutProof = clientFinalMessage.substring(0, proofIdx);
+            }
+
+            String expectedUser = configManager.getAdminUsername();
+            String expectedPass = configManager.getAdminPassword();
+
+            String algorithm = session.mechanism.contains("SHA-256") ? "SHA-256" : "SHA-1";
+
+            // MongoDB SCRAM-SHA-1 使用 MD5 哈希后的密码: md5(username + ":mongo:" + password)
+            byte[] passwordBytes;
+            if ("SHA-1".equals(algorithm)) {
+                String md5Input = expectedUser + ":mongo:" + expectedPass;
+                MessageDigest md = MessageDigest.getInstance("MD5");
+                byte[] md5Hash = md.digest(md5Input.getBytes(StandardCharsets.UTF_8));
+                StringBuilder sb = new StringBuilder();
+                for (byte b : md5Hash) {
+                    sb.append(String.format("%02x", b));
+                }
+                passwordBytes = sb.toString().getBytes(StandardCharsets.UTF_8);
+            } else {
+                passwordBytes = expectedPass.getBytes(StandardCharsets.UTF_8);
+            }
+
+            logger.info("SCRAM 认证 - 用户名: {}, 期望用户名: {}, 算法: {}", session.username, expectedUser, algorithm);
+            logger.info("SCRAM 认证 - clientFirstMessageBare: {}", session.clientFirstMessageBare);
+            logger.info("SCRAM 认证 - serverFirstMessage: {}", session.serverFirstMessage);
+            logger.info("SCRAM 认证 - clientFinalWithoutProof: {}", clientFinalWithoutProof);
+            logger.info("SCRAM 认证 - clientProof: {}", clientProof);
+
+            byte[] saltedPassword = hi(
+                    passwordBytes,
+                    Base64.getDecoder().decode(session.salt),
+                    session.iterationCount,
+                    algorithm
+            );
+
+            byte[] clientKey = hmac(saltedPassword, "Client Key".getBytes(StandardCharsets.UTF_8), algorithm);
+            byte[] storedKey = digest(clientKey, algorithm);
+
+            String authMessage = session.clientFirstMessageBare + "," +
+                    session.serverFirstMessage + "," + clientFinalWithoutProof;
+
+            logger.info("SCRAM 认证 - authMessage: {}", authMessage);
+
+            byte[] clientSignature = hmac(storedKey, authMessage.getBytes(StandardCharsets.UTF_8), algorithm);
+            byte[] expectedClientProof = xor(clientKey, clientSignature);
+
+            String expectedProofB64 = Base64.getEncoder().encodeToString(expectedClientProof);
+            logger.info("SCRAM 认证 - expectedProof: {}", expectedProofB64);
+
+            boolean userMatch = session.username.equals(expectedUser);
+            boolean passMatch = clientProof.equals(expectedProofB64);
+            logger.info("SCRAM 认证 - userMatch: {}, passMatch: {}", userMatch, passMatch);
+
+            if (!userMatch || !passMatch) {
+                scramSessions.remove(conversationId);
+                response.put("ok", 0.0);
+                response.put("errmsg", "Authentication failed: bad credentials");
+                response.put("code", 18);
+                return response;
+            }
+
+            byte[] serverKey = hmac(saltedPassword, "Server Key".getBytes(StandardCharsets.UTF_8), algorithm);
+            byte[] serverSignature = hmac(serverKey, authMessage.getBytes(StandardCharsets.UTF_8), algorithm);
+            String serverSigB64 = Base64.getEncoder().encodeToString(serverSignature);
+
+            String serverFinalMessage = "v=" + serverSigB64;
+            byte[] serverFinalPayload = serverFinalMessage.getBytes(StandardCharsets.UTF_8);
+
+            scramSessions.remove(conversationId);
+
+            response.put("conversationId", conversationId);
+            response.put("payload", serverFinalPayload);
+            response.put("done", true);
+            response.put("ok", 1.0);
+        } catch (Exception e) {
+            logger.warn("SCRAM saslContinue 错误: {}", e.getMessage(), e);
+            response.put("ok", 0.0);
+            response.put("errmsg", e.getMessage());
+        }
+        return response;
+    }
+
+    private static String generateNonce() {
+        byte[] nonce = new byte[12];
+        secureRandom.nextBytes(nonce);
+        StringBuilder sb = new StringBuilder();
+        for (byte b : nonce) {
+            sb.append(String.format("%02x", b));
+        }
+        return sb.toString();
+    }
+
+    private static String generateSalt() {
+        byte[] salt = new byte[16];
+        secureRandom.nextBytes(salt);
+        return Base64.getEncoder().encodeToString(salt);
+    }
+
+    private static byte[] hi(byte[] password, byte[] salt, int iterations, String algorithm) throws Exception {
+        String pbkdfAlgo = algorithm.equals("SHA-256") ?
+                "PBKDF2WithHmacSHA256" : "PBKDF2WithHmacSHA1";
+        javax.crypto.SecretKeyFactory skf = javax.crypto.SecretKeyFactory.getInstance(pbkdfAlgo);
+        javax.crypto.spec.PBEKeySpec spec = new javax.crypto.spec.PBEKeySpec(
+                new String(password, StandardCharsets.UTF_8).toCharArray(),
+                salt, iterations, algorithm.equals("SHA-256") ? 256 : 160);
+        return skf.generateSecret(spec).getEncoded();
+    }
+
+    private static byte[] hmac(byte[] key, byte[] data, String algorithm) throws Exception {
+        String algo = algorithm.equals("SHA-256") ? "HmacSHA256" : "HmacSHA1";
+        javax.crypto.Mac mac = javax.crypto.Mac.getInstance(algo);
+        mac.init(new javax.crypto.spec.SecretKeySpec(key, algo));
+        return mac.doFinal(data);
+    }
+
+    private static byte[] digest(byte[] data, String algorithm) throws Exception {
+        MessageDigest md = MessageDigest.getInstance(algorithm.equals("SHA-256") ? "SHA-256" : "SHA-1");
+        return md.digest(data);
+    }
+
+    private static byte[] xor(byte[] a, byte[] b) {
+        byte[] result = new byte[Math.min(a.length, b.length)];
+        for (int i = 0; i < result.length; i++) {
+            result[i] = (byte) (a[i] ^ b[i]);
+        }
+        return result;
+    }
+
     // -------- BSON 编解码（最小实现） --------
     private static class BsonResult {
         final Map<String, Object> doc;
@@ -579,6 +893,17 @@ public class MongoWireProtocolServer {
                     for (Map.Entry<String, Object> e : entries) arr.add(e.getValue());
                     doc.put(name, arr);
                     pos = br.nextPos;
+                    break;
+                }
+                case 0x05: { // binary
+                    int binLen = bytesToIntLE(data, pos);
+                    pos += 4;
+                    int subtype = data[pos] & 0xFF;
+                    pos += 1;
+                    byte[] binData = new byte[binLen];
+                    System.arraycopy(data, pos, binData, 0, binLen);
+                    pos += binLen;
+                    doc.put(name, binData);
                     break;
                 }
                 case 0x07: { // ObjectId (12 bytes)
@@ -680,6 +1005,14 @@ public class MongoWireProtocolServer {
             baos.write(0);
             long bits = Double.doubleToLongBits(((Number) value).doubleValue());
             writeLongLE(baos, bits);
+        } else if (value instanceof byte[]) {
+            baos.write(0x05);
+            baos.write(key.getBytes(StandardCharsets.UTF_8));
+            baos.write(0);
+            byte[] bytes = (byte[]) value;
+            writeIntLE(baos, bytes.length);
+            baos.write(0x00); // subtype: generic binary
+            baos.write(bytes);
         } else if (value instanceof String) {
             baos.write(0x02);
             baos.write(key.getBytes(StandardCharsets.UTF_8));

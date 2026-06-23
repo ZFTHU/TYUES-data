@@ -1,6 +1,7 @@
 plugins {
     id 'java'
     id 'application'
+    id 'com.github.johnrengelman.shadow' version '8.1.1'
 }
 
 repositories {
@@ -29,11 +30,20 @@ jar {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     manifest {
         attributes 'Main-Class': 'com.typui.database.Main'
+        attributes 'Implementation-Title': 'TYUES-data Database'
+        attributes 'Implementation-Version': '3.4.2567.29'
+        attributes 'Implementation-Vendor': 'TYUES Organization'
     }
     from {
         configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
     }
     exclude 'META-INF/*.RSA', 'META-INF/*.SF', 'META-INF/*.DSA'
+}
+
+shadowJar {
+    archiveBaseName.set('typui-database')
+    archiveClassifier.set('')
+    archiveVersion.set('3.4.2567.29')
 }
 
 tasks.withType(JavaCompile) {

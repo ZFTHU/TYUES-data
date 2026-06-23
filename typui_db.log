@@ -1,0 +1,317 @@
+
+[36m[0m
+[36m  ████████╗██╗   ██╗██╗    ████████╗███████╗██████╗ ███╗   ███╗██╗███╗   ██╗ █████╗ ██╗     [0m
+[36m  ╚══██╔══╝██║   ██║██║    ╚══██╔══╝██╔════╝██╔══██╗████╗ ████║██║████╗  ██║██╔══██╗██║     [0m
+[36m     ██║   ██║   ██║██║       ██║   █████╗  ██████╔╝██╔████╔██║██║██╔██╗ ██║███████║██║     [0m
+[36m     ██║   ██║   ██║██║       ██║   ██╔══╝  ██╔══██╗██║╚██╔╝██║██║██║╚██╗██║██╔══██║██║     [0m
+[36m     ██║   ╚██████╔╝██║       ██║   ███████╗██║  ██║██║ ╚═╝ ██║██║██║ ╚████║██║  ██║███████╗[0m
+[36m     ╚═╝    ╚═════╝ ╚═╝       ╚═╝   ╚══════╝╚═╝  ╚═╝╚═╝     ╚═╝╚═╝╚═╝  ╚═══╝╚═╝  ╚═╝╚══════╝[0m
+[36m                                                                                            [0m
+[36m  Database Server - MongoDB & MinIO Compatible                                              [0m
+[36m[0m
+[33m  :: TYPUI Database :: (v2.1.0)[0m
+[90m  :: Build Date: 2026-04-25 ::[0m
+
+[90m  Java Version  [0m : [37m17.0.17 (Microsoft)[0m
+[90m  Java Home     [0m : [37mC:\TYUES\jdk17[0m
+[90m  OS            [0m : [37mWindows 11 10.0 amd64[0m
+[90m  Processors    [0m : [37m4[0m
+[90m  Max Memory    [0m : [37m1002 MB[0m
+[90m  Memory Usage  [0m : [37m6 MB / 64 MB[0m
+[90m  Start Time    [0m : [37m2026-06-23 22:40:00[0m
+[90m  PID           [0m : [37m7300[0m
+
+[90m  ──────────────────────────────────────────────────────────────────────[0m
+
+[main] INFO com.typui.database.logging.LogManager - 日志管理器初始化完成
+[main] INFO com.typui.database.Main - 日志管理器初始化完成
+  [33m➜[0m Starting ConfigManager...
+[main] INFO com.typui.database.ConfigManager - 配置加载成功
+  [32m✓[0m ConfigManager ready at [36mhttp://localhost:0[0m
+  [33m➜[0m Starting AuthService...
+[main] INFO com.typui.database.auth.AuthService - 用户数据加载完成，共 1 个用户
+  [32m✓[0m AuthService ready at [36mhttp://localhost:0[0m
+  [33m➜[0m Starting DocumentServer...
+[main] INFO com.typui.database.document.DocumentServer - 数据库加载成功: blog_test
+[main] INFO com.typui.database.document.DocumentCollection - 集合 test_collection 加载完成，共 6 个文档
+[main] INFO com.typui.database.document.DocumentDatabase - 集合加载成功: test_collection
+[main] INFO com.typui.database.document.DocumentServer - 数据库加载成功: test_db
+[main] INFO com.typui.database.document.DocumentCollection - 集合 articles 加载完成，共 2 个文档
+[main] INFO com.typui.database.document.DocumentDatabase - 集合加载成功: articles
+[main] INFO com.typui.database.document.DocumentCollection - 集合 categories 加载完成，共 5 个文档
+[main] INFO com.typui.database.document.DocumentDatabase - 集合加载成功: categories
+[main] INFO com.typui.database.document.DocumentCollection - 集合 settings 加载完成，共 2 个文档
+[main] INFO com.typui.database.document.DocumentDatabase - 集合加载成功: settings
+[main] INFO com.typui.database.document.DocumentCollection - 集合 test_articles 加载完成，共 8 个文档
+[main] INFO com.typui.database.document.DocumentDatabase - 集合加载成功: test_articles
+[main] INFO com.typui.database.document.DocumentCollection - 集合 test_articles2 加载完成，共 2 个文档
+[main] INFO com.typui.database.document.DocumentDatabase - 集合加载成功: test_articles2
+[main] INFO com.typui.database.document.DocumentCollection - 集合 test_final 加载完成，共 1 个文档
+[main] INFO com.typui.database.document.DocumentDatabase - 集合加载成功: test_final
+[main] INFO com.typui.database.document.DocumentCollection - 集合 test_single 加载完成，共 1 个文档
+[main] INFO com.typui.database.document.DocumentDatabase - 集合加载成功: test_single
+[main] INFO com.typui.database.document.DocumentCollection - 集合 test_users 加载完成，共 2 个文档
+[main] INFO com.typui.database.document.DocumentDatabase - 集合加载成功: test_users
+[main] INFO com.typui.database.document.DocumentCollection - 集合 test_verify 加载完成，共 4 个文档
+[main] INFO com.typui.database.document.DocumentDatabase - 集合加载成功: test_verify
+[main] INFO com.typui.database.document.DocumentCollection - 集合 users 加载完成，共 2 个文档
+[main] INFO com.typui.database.document.DocumentDatabase - 集合加载成功: users
+[main] INFO com.typui.database.document.DocumentServer - 数据库加载成功: typui_db
+[main] INFO io.javalin.Javalin - Starting Javalin ...
+[main] INFO org.eclipse.jetty.server.Server - jetty-11.0.20; built: 2024-01-29T21:04:22.394Z; git: 922f8dc188f7011e60d0361de585fd4ac4d63064; jvm 17.0.17+10-LTS
+[main] INFO org.eclipse.jetty.server.session.DefaultSessionIdManager - Session workerName=node0
+[main] INFO org.eclipse.jetty.server.handler.ContextHandler - Started o.e.j.s.ServletContextHandler@616ac46a{/,null,AVAILABLE}
+[main] INFO org.eclipse.jetty.server.AbstractConnector - Started ServerConnector@433defed{HTTP/1.1, (http/1.1)}{0.0.0.0:27016}
+[main] INFO org.eclipse.jetty.server.Server - Started Server@30f842ca{STARTING}[11.0.20,sto=0] @6417ms
+[main] INFO io.javalin.Javalin - Javalin started in 1472ms \o/
+[main] INFO io.javalin.Javalin - Listening on http://localhost:27016/
+[main] INFO io.javalin.Javalin - You are running Javalin 6.1.3 (released March 2, 2024. Your Javalin version is 842 days old. Consider checking for a newer version.).
+[main] INFO com.typui.database.document.DocumentServer - ========================================
+[main] INFO com.typui.database.document.DocumentServer - 文档数据库服务器启动成功！
+[main] INFO com.typui.database.document.DocumentServer - 端口: 27016
+[main] INFO com.typui.database.document.DocumentServer - 数据目录: C:\TYUES\ACCZH\SJK\db
+[main] INFO com.typui.database.document.DocumentServer - ========================================
+  [32m✓[0m DocumentServer ready at [36mhttp://0.0.0.0:27016[0m
+  [33m➜[0m Starting StorageServer...
+[main] INFO com.typui.database.storage.StorageBucket - 存储桶 typui_db 元数据加载完成，共 0 个文件
+[main] INFO com.typui.database.storage.StorageServer - 存储桶加载成功: typui_db
+[main] INFO io.javalin.Javalin - Starting Javalin ...
+[main] INFO org.eclipse.jetty.server.Server - jetty-11.0.20; built: 2024-01-29T21:04:22.394Z; git: 922f8dc188f7011e60d0361de585fd4ac4d63064; jvm 17.0.17+10-LTS
+[main] INFO org.eclipse.jetty.server.session.DefaultSessionIdManager - Session workerName=node0
+[main] INFO org.eclipse.jetty.server.handler.ContextHandler - Started o.e.j.s.ServletContextHandler@68702e03{/,null,AVAILABLE}
+[main] INFO org.eclipse.jetty.server.AbstractConnector - Started ServerConnector@4ff8d125{HTTP/1.1, (http/1.1)}{0.0.0.0:9001}
+[main] INFO org.eclipse.jetty.server.Server - Started Server@3403e2ac{STARTING}[11.0.20,sto=0] @6780ms
+[main] INFO io.javalin.Javalin - Javalin started in 82ms \o/
+[main] INFO io.javalin.Javalin - Listening on http://localhost:9001/
+[main] INFO io.javalin.Javalin - You are running Javalin 6.1.3 (released March 2, 2024. Your Javalin version is 842 days old. Consider checking for a newer version.).
+[main] INFO com.typui.database.storage.StorageServer - ========================================
+[main] INFO com.typui.database.storage.StorageServer - 文件存储服务器启动成功！
+[main] INFO com.typui.database.storage.StorageServer - 端口: 9001
+[main] INFO com.typui.database.storage.StorageServer - 数据库名: typui_db
+[main] INFO com.typui.database.storage.StorageServer - 数据目录: C:\TYUES\ACCZH\SJK\tec
+[main] INFO com.typui.database.storage.StorageServer - 默认存储桶: typui_db
+[main] INFO com.typui.database.storage.StorageServer - ========================================
+  [32m✓[0m StorageServer ready at [36mhttp://0.0.0.0:9001[0m
+  [33m➜[0m Starting BackupManager...
+  [32m✓[0m BackupManager ready at [36mhttp://localhost:0[0m
+  [33m➜[0m Starting AdminServer...
+[main] INFO io.javalin.Javalin - Starting Javalin ...
+[main] INFO org.eclipse.jetty.server.Server - jetty-11.0.20; built: 2024-01-29T21:04:22.394Z; git: 922f8dc188f7011e60d0361de585fd4ac4d63064; jvm 17.0.17+10-LTS
+[main] INFO org.eclipse.jetty.server.session.DefaultSessionIdManager - Session workerName=node0
+[main] INFO org.eclipse.jetty.server.handler.ContextHandler - Started o.e.j.s.ServletContextHandler@512baff6{/,null,AVAILABLE}
+[main] INFO org.eclipse.jetty.server.AbstractConnector - Started ServerConnector@146dfe6{HTTP/1.1, (http/1.1)}{0.0.0.0:9002}
+[main] INFO org.eclipse.jetty.server.Server - Started Server@1fc32e4f{STARTING}[11.0.20,sto=0] @7010ms
+[main] INFO io.javalin.Javalin - Javalin started in 54ms \o/
+[main] INFO io.javalin.Javalin - Listening on http://localhost:9002/
+[main] INFO io.javalin.Javalin - You are running Javalin 6.1.3 (released March 2, 2024. Your Javalin version is 842 days old. Consider checking for a newer version.).
+[main] INFO com.typui.database.admin.AdminServer - Admin UI started: http://localhost:9002
+  [32m✓[0m AdminServer ready at [36mhttp://0.0.0.0:9002[0m
+  [33m➜[0m Starting MySQL-Protocol...
+[main] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL 协议服务器已启动 - 监听端口: 3306, version: 8.0.36-TYPUI
+  [32m✓[0m MySQL-Protocol ready at [36mhttp://0.0.0.0:3306[0m
+  [33m➜[0m Starting MongoDB-Wire...
+[main] INFO com.typui.database.adapter.MongoWireProtocolServer - MongoDB 线协议服务器已启动 - 监听端口: 27017, version: 6.0.12-TYPUI
+  [32m✓[0m MongoDB-Wire ready at [36mhttp://0.0.0.0:27017[0m
+  [33m➜[0m Starting S3/MinIO-Compatible...
+[main] INFO io.javalin.Javalin - Starting Javalin ...
+[main] INFO org.eclipse.jetty.server.Server - jetty-11.0.20; built: 2024-01-29T21:04:22.394Z; git: 922f8dc188f7011e60d0361de585fd4ac4d63064; jvm 17.0.17+10-LTS
+[main] INFO org.eclipse.jetty.server.session.DefaultSessionIdManager - Session workerName=node0
+[main] INFO org.eclipse.jetty.server.handler.ContextHandler - Started o.e.j.s.ServletContextHandler@4f5991f6{/,null,AVAILABLE}
+[main] INFO org.eclipse.jetty.server.AbstractConnector - Started ServerConnector@332796d3{HTTP/1.1, (http/1.1)}{0.0.0.0:9000}
+[main] INFO org.eclipse.jetty.server.Server - Started Server@3cdf2c61{STARTING}[11.0.20,sto=0] @7160ms
+[main] INFO io.javalin.Javalin - Javalin started in 49ms \o/
+[main] INFO io.javalin.Javalin - Listening on http://localhost:9000/
+[main] INFO io.javalin.Javalin - You are running Javalin 6.1.3 (released March 2, 2024. Your Javalin version is 842 days old. Consider checking for a newer version.).
+[main] INFO com.typui.database.adapter.S3CompatibleServer - S3/MinIO 兼容协议服务器已启动 - 监听端口: 9000
+  [32m✓[0m S3/MinIO-Compatible ready at [36mhttp://0.0.0.0:9000[0m
+
+  [32m  ✓ All services started successfully![0m
+
+[33m  Server Information:[0m
+  [90m─────────────────────────────────────────────────────────[0m
+  [36mDatabase        [0m : typui_db
+  [36mDocument API    [0m : http://localhost:27016
+  [36mStorage API     [0m : http://localhost:9001
+  [36mMySQL Protocol  [0m : mysql://root:ZM135790..@localhost:3306
+  [36mMongoDB Protocol[0m : mongodb://root:ZM135790..@localhost:27017
+  [36mS3/MinIO Protocol[0m : http://localhost:9000 (s3v4)
+  [36mAdmin Panel     [0m : http://localhost:9002
+  [90m─────────────────────────────────────────────────────────[0m
+  [32mVersion         [0m : 3.4.2567.24 (Build 4.2)
+  [90m─────────────────────────────────────────────────────────[0m
+
+[33m  Running in background mode - commands disabled[0m
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL received: clientSeq=1, length=144
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - sendOKWithAffected: seq=2, payload_len=7, payload_hex=00000002000000
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL received: clientSeq=0, length=18
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL SQL: SET NAMES utf8mb4
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL SQL lower: 'set names utf8mb4'
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL isSelectShow: false
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL sending OK for DML/DDL
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL affectedRows=0, lastInsertId=0
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - sendOKWithAffected: seq=1, payload_len=7, payload_hex=00000002000000
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL received: clientSeq=0, length=19
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL SQL: SET AUTOCOMMIT = 0
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL SQL lower: 'set autocommit = 0'
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL isSelectShow: false
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL sending OK for DML/DDL
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL affectedRows=0, lastInsertId=0
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - sendOKWithAffected: seq=1, payload_len=7, payload_hex=00000002000000
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL received: clientSeq=0, length=17
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL SQL: SELECT VERSION()
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL SQL lower: 'select version()'
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL isSelectShow: true
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL sending result set for SELECT/SHOW
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL received: clientSeq=0, length=15
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL SQL: SHOW DATABASES
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL SQL lower: 'show databases'
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL isSelectShow: true
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL sending result set for SELECT/SHOW
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL received: clientSeq=0, length=32
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL SQL: DROP TABLE IF EXISTS test_users
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL SQL lower: 'drop table if exists test_users'
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL isSelectShow: false
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL sending OK for DML/DDL
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL affectedRows=0, lastInsertId=0
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - sendOKWithAffected: seq=1, payload_len=7, payload_hex=00000002000000
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL received: clientSeq=0, length=221
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL SQL: CREATE TABLE test_users (
+                    id INT PRIMARY KEY,
+                    name VARCHAR(100),
+                    email VARCHAR(100),
+                    age INT
+                )
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL SQL lower: 'create table test_users (
+                    id int primary key,
+                    name varchar(100),
+                    email varchar(100),
+                    age int
+                )'
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL isSelectShow: false
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL sending OK for DML/DDL
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL affectedRows=0, lastInsertId=0
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - sendOKWithAffected: seq=1, payload_len=7, payload_hex=00000002000000
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL received: clientSeq=0, length=7
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL SQL: COMMIT
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL SQL lower: 'commit'
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL isSelectShow: false
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL sending OK for DML/DDL
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL affectedRows=0, lastInsertId=0
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - sendOKWithAffected: seq=1, payload_len=7, payload_hex=00000002000000
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL received: clientSeq=0, length=12
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL SQL: SHOW TABLES
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL SQL lower: 'show tables'
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL isSelectShow: true
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL sending result set for SELECT/SHOW
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL received: clientSeq=0, length=95
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL SQL: INSERT INTO test_users (id, name, email, age) VALUES (1, '张三', 'zhangsan@example.com', 25)
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL SQL lower: 'insert into test_users (id, name, email, age) values (1, '张三', 'zhangsan@example.com', 25)'
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL isSelectShow: false
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL sending OK for DML/DDL
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL affectedRows=1, lastInsertId=0
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - sendOKWithAffected: seq=1, payload_len=7, payload_hex=00010002000000
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL received: clientSeq=0, length=7
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL SQL: COMMIT
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL SQL lower: 'commit'
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL isSelectShow: false
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL sending OK for DML/DDL
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL affectedRows=0, lastInsertId=0
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - sendOKWithAffected: seq=1, payload_len=7, payload_hex=00000002000000
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL received: clientSeq=0, length=172
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL SQL: INSERT INTO test_users (id, name, email, age) VALUES (2, '李四', 'lisi@example.com', 30),(3, '王五', 'wangwu@example.com', 35),(4, '赵六', 'zhaoliu@example.com', 28)
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL SQL lower: 'insert into test_users (id, name, email, age) values (2, '李四', 'lisi@example.com', 30),(3, '王五', 'wangwu@example.com', 35),(4, '赵六', 'zhaoliu@example.com', 28)'
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL isSelectShow: false
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL sending OK for DML/DDL
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL affectedRows=3, lastInsertId=0
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - sendOKWithAffected: seq=1, payload_len=7, payload_hex=00030002000000
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL received: clientSeq=0, length=7
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL SQL: COMMIT
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL SQL lower: 'commit'
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL isSelectShow: false
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL sending OK for DML/DDL
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL affectedRows=0, lastInsertId=0
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - sendOKWithAffected: seq=1, payload_len=7, payload_hex=00000002000000
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL received: clientSeq=0, length=38
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL SQL: SELECT * FROM test_users WHERE id = 1
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL SQL lower: 'select * from test_users where id = 1'
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL isSelectShow: true
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL sending result set for SELECT/SHOW
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL received: clientSeq=0, length=52
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL SQL: SELECT * FROM test_users WHERE age > 28 ORDER BY id
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL SQL lower: 'select * from test_users where age > 28 order by id'
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL isSelectShow: true
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL sending result set for SELECT/SHOW
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL received: clientSeq=0, length=32
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL SQL: SELECT COUNT(*) FROM test_users
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL SQL lower: 'select count(*) from test_users'
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL isSelectShow: true
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL sending result set for SELECT/SHOW
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL received: clientSeq=0, length=64
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL SQL: UPDATE test_users SET name = '张三丰', age = 26 WHERE id = 1
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL SQL lower: 'update test_users set name = '张三丰', age = 26 where id = 1'
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL isSelectShow: false
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL sending OK for DML/DDL
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL affectedRows=2, lastInsertId=0
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - sendOKWithAffected: seq=1, payload_len=7, payload_hex=00020002000000
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL received: clientSeq=0, length=7
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL SQL: COMMIT
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL SQL lower: 'commit'
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL isSelectShow: false
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL sending OK for DML/DDL
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL affectedRows=0, lastInsertId=0
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - sendOKWithAffected: seq=1, payload_len=7, payload_hex=00000002000000
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL received: clientSeq=0, length=46
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL SQL: SELECT name, age FROM test_users WHERE id = 1
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL SQL lower: 'select name, age from test_users where id = 1'
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL isSelectShow: true
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL sending result set for SELECT/SHOW
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL received: clientSeq=0, length=36
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL SQL: DELETE FROM test_users WHERE id = 4
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL SQL lower: 'delete from test_users where id = 4'
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL isSelectShow: false
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL sending OK for DML/DDL
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL affectedRows=1, lastInsertId=0
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - sendOKWithAffected: seq=1, payload_len=7, payload_hex=00010002000000
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL received: clientSeq=0, length=7
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL SQL: COMMIT
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL SQL lower: 'commit'
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL isSelectShow: false
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL sending OK for DML/DDL
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL affectedRows=0, lastInsertId=0
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - sendOKWithAffected: seq=1, payload_len=7, payload_hex=00000002000000
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL received: clientSeq=0, length=32
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL SQL: SELECT COUNT(*) FROM test_users
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL SQL lower: 'select count(*) from test_users'
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL isSelectShow: true
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL sending result set for SELECT/SHOW
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL received: clientSeq=0, length=48
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL SQL: SELECT * FROM test_users WHERE name LIKE '张%'
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL SQL lower: 'select * from test_users where name like '张%''
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL isSelectShow: true
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL sending result set for SELECT/SHOW
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL received: clientSeq=0, length=51
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL SQL: SELECT name, age FROM test_users ORDER BY age DESC
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL SQL lower: 'select name, age from test_users order by age desc'
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL isSelectShow: true
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL sending result set for SELECT/SHOW
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL received: clientSeq=0, length=54
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL SQL: SELECT * FROM test_users ORDER BY id LIMIT 2 OFFSET 0
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL SQL lower: 'select * from test_users order by id limit 2 offset 0'
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL isSelectShow: true
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL sending result set for SELECT/SHOW
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL received: clientSeq=0, length=32
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL SQL: DROP TABLE IF EXISTS test_users
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL SQL lower: 'drop table if exists test_users'
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL isSelectShow: false
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL sending OK for DML/DDL
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL affectedRows=0, lastInsertId=0
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - sendOKWithAffected: seq=1, payload_len=7, payload_hex=00000002000000
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL received: clientSeq=0, length=7
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL SQL: COMMIT
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL SQL lower: 'commit'
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL isSelectShow: false
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL sending OK for DML/DDL
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL affectedRows=0, lastInsertId=0
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - sendOKWithAffected: seq=1, payload_len=7, payload_hex=00000002000000
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL received: clientSeq=0, length=1
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - sendOKWithAffected: seq=1, payload_len=7, payload_hex=00000002000000

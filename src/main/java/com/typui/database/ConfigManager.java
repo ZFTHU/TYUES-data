@@ -515,7 +515,7 @@ public class ConfigManager {
         return strOf(getSection("mysqlProtocol"), "defaultVersion", "8.0");
     }
     public String getMysqlServerVersion() {
-        return strOf(getSection("mysqlProtocol"), "serverVersion", "8.0.36-TYPUI");
+        return strOf(getSection("mysqlProtocol"), "serverVersion", "8.0.36-TYPUI v3.0.31");
     }
     public String getMysqlCharset() {
         return strOf(getSection("mysqlProtocol"), "charset", "utf8mb4");

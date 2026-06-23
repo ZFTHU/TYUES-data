@@ -1,0 +1,90 @@
+[main] INFO com.typui.database.logging.LogManager - 日志管理器初始化完成
+[main] INFO com.typui.database.Main - 日志管理器初始化完成
+[main] INFO com.typui.database.ConfigManager - 配置加载成功
+[main] INFO com.typui.database.auth.AuthService - 用户数据加载完成，共 1 个用户
+[main] INFO com.typui.database.document.DocumentCollection - 集合 user 加载完成，共 0 个文档
+[main] INFO com.typui.database.document.DocumentDatabase - 集合加载成功: user
+[main] INFO com.typui.database.document.DocumentServer - 数据库加载成功: typui_db
+[main] INFO io.javalin.Javalin - Starting Javalin ...
+[main] INFO org.eclipse.jetty.server.Server - jetty-11.0.20; built: 2024-01-29T21:04:22.394Z; git: 922f8dc188f7011e60d0361de585fd4ac4d63064; jvm 17.0.17+10-LTS
+[main] INFO org.eclipse.jetty.server.session.DefaultSessionIdManager - Session workerName=node0
+[main] INFO org.eclipse.jetty.server.handler.ContextHandler - Started o.e.j.s.ServletContextHandler@5e21e98f{/,null,AVAILABLE}
+[main] INFO org.eclipse.jetty.server.AbstractConnector - Started ServerConnector@2a7f1f10{HTTP/1.1, (http/1.1)}{0.0.0.0:27016}
+[main] INFO org.eclipse.jetty.server.Server - Started Server@3ba987b8{STARTING}[11.0.20,sto=0] @2238ms
+[main] INFO io.javalin.Javalin - Javalin started in 671ms \o/
+[main] INFO io.javalin.Javalin - Listening on http://localhost:27016/
+[main] INFO io.javalin.Javalin - You are running Javalin 6.1.3 (released March 2, 2024. Your Javalin version is 835 days old. Consider checking for a newer version.).
+[main] INFO com.typui.database.document.DocumentServer - ========================================
+[main] INFO com.typui.database.document.DocumentServer - 文档数据库服务器启动成功！
+[main] INFO com.typui.database.document.DocumentServer - 端口: 27016
+[main] INFO com.typui.database.document.DocumentServer - 数据目录: C:\TYUES\ACCZH\SJK\db
+[main] INFO com.typui.database.document.DocumentServer - ========================================
+[main] INFO com.typui.database.storage.StorageBucket - 存储桶 typui_db 元数据加载完成，共 0 个文件
+[main] INFO com.typui.database.storage.StorageServer - 存储桶加载成功: typui_db
+[main] INFO io.javalin.Javalin - Starting Javalin ...
+[main] INFO org.eclipse.jetty.server.Server - jetty-11.0.20; built: 2024-01-29T21:04:22.394Z; git: 922f8dc188f7011e60d0361de585fd4ac4d63064; jvm 17.0.17+10-LTS
+[main] INFO org.eclipse.jetty.server.session.DefaultSessionIdManager - Session workerName=node0
+[main] INFO org.eclipse.jetty.server.handler.ContextHandler - Started o.e.j.s.ServletContextHandler@1838ccb8{/,null,AVAILABLE}
+[main] INFO org.eclipse.jetty.server.AbstractConnector - Started ServerConnector@455b6df1{HTTP/1.1, (http/1.1)}{0.0.0.0:9001}
+[main] INFO org.eclipse.jetty.server.Server - Started Server@3f67593e{STARTING}[11.0.20,sto=0] @2368ms
+[main] INFO io.javalin.Javalin - Javalin started in 24ms \o/
+[main] INFO io.javalin.Javalin - Listening on http://localhost:9001/
+[main] INFO io.javalin.Javalin - You are running Javalin 6.1.3 (released March 2, 2024. Your Javalin version is 835 days old. Consider checking for a newer version.).
+[main] INFO com.typui.database.storage.StorageServer - ========================================
+[main] INFO com.typui.database.storage.StorageServer - 文件存储服务器启动成功！
+[main] INFO com.typui.database.storage.StorageServer - 端口: 9001
+[main] INFO com.typui.database.storage.StorageServer - 数据库名: typui_db
+[main] INFO com.typui.database.storage.StorageServer - 数据目录: C:\TYUES\ACCZH\SJK\tec
+[main] INFO com.typui.database.storage.StorageServer - 默认存储桶: typui_db
+[main] INFO com.typui.database.storage.StorageServer - ========================================
+[main] INFO io.javalin.Javalin - Starting Javalin ...
+[main] INFO org.eclipse.jetty.server.Server - jetty-11.0.20; built: 2024-01-29T21:04:22.394Z; git: 922f8dc188f7011e60d0361de585fd4ac4d63064; jvm 17.0.17+10-LTS
+[main] INFO org.eclipse.jetty.server.session.DefaultSessionIdManager - Session workerName=node0
+[main] INFO org.eclipse.jetty.server.handler.ContextHandler - Started o.e.j.s.ServletContextHandler@327bcebd{/,null,AVAILABLE}
+[main] INFO org.eclipse.jetty.server.AbstractConnector - Started ServerConnector@5b367418{HTTP/1.1, (http/1.1)}{0.0.0.0:9002}
+[main] INFO org.eclipse.jetty.server.Server - Started Server@481ba2cf{STARTING}[11.0.20,sto=0] @2463ms
+[main] INFO io.javalin.Javalin - Javalin started in 31ms \o/
+[main] INFO io.javalin.Javalin - Listening on http://localhost:9002/
+[main] INFO io.javalin.Javalin - You are running Javalin 6.1.3 (released March 2, 2024. Your Javalin version is 835 days old. Consider checking for a newer version.).
+[main] INFO com.typui.database.admin.AdminServer - Admin UI started: http://localhost:9002
+[main] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL 协议服务器已启动 - 监听端口: 3306, version: 8.0.36-TYPUI
+[main] INFO com.typui.database.adapter.MongoWireProtocolServer - MongoDB 线协议服务器已启动 - 监听端口: 27017, version: 6.0.12-TYPUI
+[main] INFO io.javalin.Javalin - Starting Javalin ...
+[main] INFO org.eclipse.jetty.server.Server - jetty-11.0.20; built: 2024-01-29T21:04:22.394Z; git: 922f8dc188f7011e60d0361de585fd4ac4d63064; jvm 17.0.17+10-LTS
+[main] INFO org.eclipse.jetty.server.session.DefaultSessionIdManager - Session workerName=node0
+[main] INFO org.eclipse.jetty.server.handler.ContextHandler - Started o.e.j.s.ServletContextHandler@5f354bcf{/,null,AVAILABLE}
+[main] INFO org.eclipse.jetty.server.AbstractConnector - Started ServerConnector@7b205dbd{HTTP/1.1, (http/1.1)}{0.0.0.0:9000}
+[main] INFO org.eclipse.jetty.server.Server - Started Server@7a67e3c6{STARTING}[11.0.20,sto=0] @2530ms
+[main] INFO io.javalin.Javalin - Javalin started in 19ms \o/
+[main] INFO io.javalin.Javalin - Listening on http://localhost:9000/
+[main] INFO io.javalin.Javalin - You are running Javalin 6.1.3 (released March 2, 2024. Your Javalin version is 835 days old. Consider checking for a newer version.).
+[main] INFO com.typui.database.adapter.S3CompatibleServer - S3/MinIO 兼容协议服务器已启动 - 监听端口: 9000
+[main] INFO com.typui.database.Main - 关闭前快照已创建
+[main] INFO com.typui.database.adapter.MysqlProtocolServer - 正在停止 MySQL 协议服务器...
+[main] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL 协议服务器已停止
+[main] INFO com.typui.database.adapter.MongoWireProtocolServer - 正在停止 MongoDB 线协议服务器...
+[main] INFO com.typui.database.adapter.MongoWireProtocolServer - MongoDB 线协议服务器已停止
+[main] INFO io.javalin.Javalin - Stopping Javalin ...
+[main] INFO org.eclipse.jetty.server.Server - Stopped Server@7a67e3c6{STOPPING}[11.0.20,sto=0]
+[main] INFO org.eclipse.jetty.server.AbstractConnector - Stopped ServerConnector@7b205dbd{HTTP/1.1, (http/1.1)}{0.0.0.0:9000}
+[main] INFO org.eclipse.jetty.server.handler.ContextHandler - Stopped o.e.j.s.ServletContextHandler@5f354bcf{/,null,STOPPED}
+[main] INFO io.javalin.Javalin - Javalin has stopped
+[main] INFO com.typui.database.adapter.S3CompatibleServer - S3/MinIO 兼容协议服务器已停止
+[main] INFO io.javalin.Javalin - Stopping Javalin ...
+[main] INFO org.eclipse.jetty.server.Server - Stopped Server@481ba2cf{STOPPING}[11.0.20,sto=0]
+[main] INFO org.eclipse.jetty.server.AbstractConnector - Stopped ServerConnector@5b367418{HTTP/1.1, (http/1.1)}{0.0.0.0:9002}
+[main] INFO org.eclipse.jetty.server.handler.ContextHandler - Stopped o.e.j.s.ServletContextHandler@327bcebd{/,null,STOPPED}
+[main] INFO io.javalin.Javalin - Javalin has stopped
+[main] INFO io.javalin.Javalin - Stopping Javalin ...
+[main] INFO org.eclipse.jetty.server.Server - Stopped Server@3ba987b8{STOPPING}[11.0.20,sto=0]
+[main] INFO org.eclipse.jetty.server.AbstractConnector - Stopped ServerConnector@2a7f1f10{HTTP/1.1, (http/1.1)}{0.0.0.0:27016}
+[main] INFO org.eclipse.jetty.server.handler.ContextHandler - Stopped o.e.j.s.ServletContextHandler@5e21e98f{/,null,STOPPED}
+[main] INFO io.javalin.Javalin - Javalin has stopped
+[main] INFO com.typui.database.document.DocumentServer - 文档数据库服务器已停止
+[main] INFO io.javalin.Javalin - Stopping Javalin ...
+[main] INFO org.eclipse.jetty.server.Server - Stopped Server@3f67593e{STOPPING}[11.0.20,sto=0]
+[main] INFO org.eclipse.jetty.server.AbstractConnector - Stopped ServerConnector@455b6df1{HTTP/1.1, (http/1.1)}{0.0.0.0:9001}
+[main] INFO org.eclipse.jetty.server.handler.ContextHandler - Stopped o.e.j.s.ServletContextHandler@1838ccb8{/,null,STOPPED}
+[main] INFO io.javalin.Javalin - Javalin has stopped
+[main] INFO com.typui.database.storage.StorageServer - 文件存储服务器已停止
+[main] INFO com.typui.database.logging.LogManager - 日志管理器已关闭
