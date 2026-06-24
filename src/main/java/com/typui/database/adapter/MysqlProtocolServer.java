@@ -860,8 +860,13 @@ public class MysqlProtocolServer {
             return res;
         }
 
+        if (trimmedLower.contains(" join ")) {
+            return execSelectWithJoin(currentDb, sql);
+        }
+
         Pattern p = Pattern.compile(
                 "(?i)^select\\s+(.+?)\\s+from\\s+([`'\"]?\\w+[`'\"]?)" +
+                        "(?:\\s+(?:as\\s+)?(\\w+))?" +
                         "(?:\\s+where\\s+(.+?))?" +
                         "(?:\\s+order\\s+by\\s+(.+?))?" +
                         "(?:\\s+limit\\s+(\\d+)(?:\\s+(?:offset|,)\\s+(\\d+))?)?" +
@@ -873,10 +878,11 @@ public class MysqlProtocolServer {
         }
         String columnsStr = m.group(1).trim();
         String collectionName = stripQuotes(m.group(2));
-        String whereClause = m.group(3);
-        String orderByClause = m.group(4);
-        String limitStr = m.group(5);
-        String offsetStr = m.group(6);
+        String tableAlias = m.group(3);
+        String whereClause = m.group(4);
+        String orderByClause = m.group(5);
+        String limitStr = m.group(6);
+        String offsetStr = m.group(7);
         int limit = limitStr == null ? 1000 : Integer.parseInt(limitStr);
         int offset = offsetStr == null ? 0 : Integer.parseInt(offsetStr);
 
@@ -900,7 +906,7 @@ public class MysqlProtocolServer {
 
         List<Map<String, Object>> filtered = new ArrayList<>();
         if (whereClause != null && !whereClause.trim().isEmpty()) {
-            List<Condition> conditions = parseWhereConditions(whereClause);
+            List<Condition> conditions = parseWhereConditions(whereClause, tableAlias);
             for (Map<String, Object> doc : allDocs) {
                 if (matchConditions(doc, conditions)) {
                     filtered.add(doc);
@@ -916,11 +922,11 @@ public class MysqlProtocolServer {
             String ob = orderByClause.trim();
             int spIdx = ob.indexOf(' ');
             if (spIdx > 0) {
-                obCol = stripQuotes(ob.substring(0, spIdx).trim());
+                obCol = stripQuotes(stripTablePrefix(ob.substring(0, spIdx).trim(), tableAlias));
                 String dir = ob.substring(spIdx).trim().toLowerCase(Locale.ROOT);
                 asc = !dir.startsWith("desc");
             } else {
-                obCol = stripQuotes(ob);
+                obCol = stripQuotes(stripTablePrefix(ob, tableAlias));
                 asc = true;
             }
             filtered.sort((a, b) -> {
@@ -928,8 +934,8 @@ public class MysqlProtocolServer {
                 String vb = String.valueOf(b.getOrDefault(obCol, ""));
                 try {
                     double da = Double.parseDouble(va);
-                    double db = Double.parseDouble(vb);
-                    return asc ? Double.compare(da, db) : Double.compare(db, da);
+                    double dbb = Double.parseDouble(vb);
+                    return asc ? Double.compare(da, dbb) : Double.compare(dbb, da);
                 } catch (NumberFormatException e) {
                     return asc ? va.compareTo(vb) : vb.compareTo(va);
                 }
@@ -955,25 +961,489 @@ public class MysqlProtocolServer {
         }
 
         String[] cols = columnsStr.split(",");
-        List<String> colNames = new ArrayList<>();
+        List<String[]> colNames = new ArrayList<>();
         for (String c : cols) {
             String colName = c.trim();
+            String alias = null;
             int asIdx = colName.toLowerCase(Locale.ROOT).indexOf(" as ");
             if (asIdx > 0) {
+                alias = colName.substring(asIdx + 4).trim();
                 colName = colName.substring(0, asIdx).trim();
             }
-            colNames.add(stripQuotes(colName));
+            String realCol = stripQuotes(stripTablePrefix(colName, tableAlias));
+            colNames.add(new String[]{realCol, alias != null ? alias : realCol});
         }
 
         List<Map<String, Object>> projected = new ArrayList<>();
         for (Map<String, Object> row : resultRows) {
             Map<String, Object> newRow = new LinkedHashMap<>();
-            for (String column : colNames) {
-                newRow.put(column, row.get(column));
+            for (String[] colInfo : colNames) {
+                newRow.put(colInfo[1], row.get(colInfo[0]));
             }
             projected.add(newRow);
         }
         return projected;
+    }
+
+    private List<Map<String, Object>> execSelectWithJoin(String currentDb, String sql) {
+        String trimmed = sql.trim();
+
+        int selectEnd = findKeywordIndex(trimmed, "from", 6);
+        if (selectEnd < 0) return Collections.emptyList();
+        String columnsStr = trimmed.substring(6, selectEnd).trim();
+
+        int whereStart = findKeywordIndex(trimmed, "where", selectEnd + 4);
+        int orderStart = findKeywordIndex(trimmed, "order by", selectEnd + 4);
+        int limitStart = findKeywordIndex(trimmed, "limit", selectEnd + 4);
+
+        int fromEnd = trimmed.length();
+        if (whereStart > 0) fromEnd = Math.min(fromEnd, whereStart);
+        if (orderStart > 0) fromEnd = Math.min(fromEnd, orderStart);
+        if (limitStart > 0) fromEnd = Math.min(fromEnd, limitStart);
+
+        String fromClause = trimmed.substring(selectEnd + 4, fromEnd).trim();
+        String whereClause = whereStart > 0 ? trimmed.substring(whereStart + 5,
+                Math.min(Math.min(orderStart > 0 ? orderStart : trimmed.length(),
+                        limitStart > 0 ? limitStart : trimmed.length()), trimmed.length())).trim() : null;
+        String orderByClause = null;
+        if (orderStart > 0) {
+            int orderEnd = limitStart > 0 ? limitStart : trimmed.length();
+            orderByClause = trimmed.substring(orderStart + 8, orderEnd).trim();
+        }
+
+        int limit = 1000;
+        int offset = 0;
+        if (limitStart > 0) {
+            String limitPart = trimmed.substring(limitStart + 5).replace(";", "").trim();
+            String[] limitParts = limitPart.split("(?i)\\s*(?:offset|,)\\s*");
+            limit = Integer.parseInt(limitParts[0].trim());
+            if (limitParts.length > 1) {
+                offset = Integer.parseInt(limitParts[1].trim());
+            }
+        }
+
+        List<TableRef> tables = parseFromClause(fromClause);
+        if (tables.isEmpty()) return Collections.emptyList();
+
+        Map<String, String> aliasToTable = new HashMap<>();
+        for (TableRef t : tables) {
+            if (t.alias != null) {
+                aliasToTable.put(t.alias.toLowerCase(Locale.ROOT), t.name);
+            }
+            aliasToTable.put(t.name.toLowerCase(Locale.ROOT), t.name);
+        }
+
+        DocumentDatabase db = getOrCreateDb(currentDb);
+        List<Map<String, Object>> result = new ArrayList<>();
+
+        TableRef mainTable = tables.get(0);
+        List<Map<String, Object>> mainDocs = new ArrayList<>(db.getCollection(mainTable.name).findAll());
+
+        if (tables.size() == 1) {
+            result = mainDocs;
+        } else {
+            List<Map<String, Object>> current = new ArrayList<>();
+            for (Map<String, Object> doc : mainDocs) {
+                Map<String, Object> prefixDoc = new LinkedHashMap<>();
+                for (Map.Entry<String, Object> e : doc.entrySet()) {
+                    prefixDoc.put((mainTable.alias != null ? mainTable.alias : mainTable.name) + "." + e.getKey(), e.getValue());
+                    prefixDoc.put(e.getKey(), e.getValue());
+                }
+                current.add(prefixDoc);
+            }
+
+            for (int ti = 1; ti < tables.size(); ti++) {
+                TableRef joinTable = tables.get(ti);
+                List<Map<String, Object>> joinDocs = new ArrayList<>(db.getCollection(joinTable.name).findAll());
+
+                List<Map<String, Object>> newResult = new ArrayList<>();
+                String leftCol = joinTable.joinLeftColumn;
+                String rightCol = joinTable.joinRightColumn;
+                String joinType = joinTable.joinType;
+
+                for (Map<String, Object> leftRow : current) {
+                    Object leftVal = leftRow.get(leftCol);
+                    if (leftVal == null) leftVal = leftRow.get(stripTablePrefix(leftCol, null));
+
+                    boolean matched = false;
+                    for (Map<String, Object> rightDoc : joinDocs) {
+                        Object rightVal = rightDoc.get(rightCol);
+                        if (rightVal == null) continue;
+
+                        if (String.valueOf(leftVal).equals(String.valueOf(rightVal))) {
+                            Map<String, Object> newRow = new LinkedHashMap<>(leftRow);
+                            for (Map.Entry<String, Object> e : rightDoc.entrySet()) {
+                                String prefixed = (joinTable.alias != null ? joinTable.alias : joinTable.name) + "." + e.getKey();
+                                newRow.put(prefixed, e.getValue());
+                                if (!newRow.containsKey(e.getKey())) {
+                                    newRow.put(e.getKey(), e.getValue());
+                                }
+                            }
+                            newResult.add(newRow);
+                            matched = true;
+                        }
+                    }
+
+                    if (!matched && "left".equalsIgnoreCase(joinType)) {
+                        Map<String, Object> newRow = new LinkedHashMap<>(leftRow);
+                        for (Map.Entry<String, Object> e : (joinDocs.isEmpty() ? new LinkedHashMap<String, Object>() : joinDocs.get(0)).entrySet()) {
+                            String prefixed = (joinTable.alias != null ? joinTable.alias : joinTable.name) + "." + e.getKey();
+                            newRow.put(prefixed, null);
+                            if (!newRow.containsKey(e.getKey())) {
+                                newRow.put(e.getKey(), null);
+                            }
+                        }
+                        newResult.add(newRow);
+                    }
+                }
+
+                current = newResult;
+            }
+
+            result = current;
+        }
+
+        List<Map<String, Object>> filtered = new ArrayList<>();
+        if (whereClause != null && !whereClause.trim().isEmpty()) {
+            List<Condition> conditions = parseWhereConditions(whereClause, null);
+            for (Map<String, Object> doc : result) {
+                if (matchConditionsJoin(doc, conditions)) {
+                    filtered.add(doc);
+                }
+            }
+        } else {
+            filtered.addAll(result);
+        }
+
+        if (orderByClause != null && !orderByClause.trim().isEmpty()) {
+            final String obCol;
+            final boolean asc;
+            String ob = orderByClause.trim();
+            int spIdx = ob.indexOf(' ');
+            if (spIdx > 0) {
+                obCol = stripQuotes(ob.substring(0, spIdx).trim());
+                String dir = ob.substring(spIdx).trim().toLowerCase(Locale.ROOT);
+                asc = !dir.startsWith("desc");
+            } else {
+                obCol = stripQuotes(ob);
+                asc = true;
+            }
+            filtered.sort((a, b) -> {
+                String va = String.valueOf(a.getOrDefault(obCol, ""));
+                String vb = String.valueOf(b.getOrDefault(obCol, ""));
+                try {
+                    double da = Double.parseDouble(va);
+                    double dbb = Double.parseDouble(vb);
+                    return asc ? Double.compare(da, dbb) : Double.compare(dbb, da);
+                } catch (NumberFormatException e) {
+                    return asc ? va.compareTo(vb) : vb.compareTo(va);
+                }
+            });
+        }
+
+        boolean isCount = false;
+        String countAlias = "COUNT(*)";
+        if (columnsStr.toLowerCase(Locale.ROOT).contains("count(")) {
+            isCount = true;
+            Pattern countP = Pattern.compile("(?i)count\\s*\\(\\s*\\*\\s*\\)\\s*(?:as\\s+([\\w]+))?", Pattern.DOTALL);
+            Matcher countM = countP.matcher(columnsStr);
+            if (countM.find()) {
+                if (countM.group(1) != null) {
+                    countAlias = countM.group(1);
+                }
+            }
+        }
+
+        List<Map<String, Object>> resultRows = new ArrayList<>();
+        if (isCount) {
+            Map<String, Object> countRow = new LinkedHashMap<>();
+            countRow.put(countAlias, String.valueOf(filtered.size()));
+            resultRows.add(countRow);
+            return resultRows;
+        }
+
+        int start = Math.min(offset, filtered.size());
+        int end = Math.min(start + limit, filtered.size());
+        for (int i = start; i < end; i++) {
+            resultRows.add(filtered.get(i));
+        }
+
+        String[] cols = columnsStr.split(",");
+        List<String> starTables = new ArrayList<>();
+        List<ColumnDef> colDefs = new ArrayList<>();
+
+        for (String c : cols) {
+            String colName = c.trim();
+            if (colName.equals("*")) {
+                starTables.add(null);
+                continue;
+            }
+            if (colName.endsWith(".*")) {
+                starTables.add(colName.substring(0, colName.length() - 2));
+                continue;
+            }
+
+            ColumnDef def = new ColumnDef();
+            int asIdx = colName.toLowerCase(Locale.ROOT).indexOf(" as ");
+            if (asIdx > 0) {
+                def.alias = colName.substring(asIdx + 4).trim();
+                def.name = colName.substring(0, asIdx).trim();
+            } else {
+                def.name = colName;
+                def.alias = null;
+            }
+            def.name = stripQuotes(def.name);
+            if (def.alias == null) {
+                def.alias = def.name.contains(".") ? def.name.substring(def.name.lastIndexOf('.') + 1) : def.name;
+            }
+            colDefs.add(def);
+        }
+
+        List<Map<String, Object>> projected = new ArrayList<>();
+        for (Map<String, Object> row : resultRows) {
+            Map<String, Object> newRow = new LinkedHashMap<>();
+
+            if (!starTables.isEmpty()) {
+                for (String starAlias : starTables) {
+                    for (Map.Entry<String, Object> e : row.entrySet()) {
+                        String key = e.getKey();
+                        if (starAlias == null) {
+                            if (!key.contains(".")) {
+                                if (!newRow.containsKey(key)) {
+                                    newRow.put(key, e.getValue());
+                                }
+                            }
+                        } else {
+                            if (key.startsWith(starAlias + ".")) {
+                                String shortKey = key.substring(starAlias.length() + 1);
+                                if (!newRow.containsKey(shortKey)) {
+                                    newRow.put(shortKey, e.getValue());
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            for (ColumnDef def : colDefs) {
+                Object val = row.get(def.name);
+                if (val == null) {
+                    val = row.get(stripTablePrefix(def.name, null));
+                }
+                newRow.put(def.alias, val);
+            }
+
+            projected.add(newRow);
+        }
+        return projected;
+    }
+
+    private static class ColumnDef {
+        String name;
+        String alias;
+    }
+
+    private static int findKeywordIndex(String sql, String keyword, int fromIndex) {
+        String lower = sql.toLowerCase(Locale.ROOT);
+        String kwLower = keyword.toLowerCase(Locale.ROOT);
+        int idx = fromIndex;
+        while (true) {
+            int found = lower.indexOf(kwLower, idx);
+            if (found < 0) return -1;
+            boolean wordBoundary = (found == 0 || !Character.isLetterOrDigit(lower.charAt(found - 1)))
+                    && (found + kwLower.length() >= lower.length()
+                    || !Character.isLetterOrDigit(lower.charAt(found + kwLower.length())));
+            if (wordBoundary) return found;
+            idx = found + 1;
+        }
+    }
+
+    private static List<TableRef> parseFromClause(String fromClause) {
+        List<TableRef> tables = new ArrayList<>();
+        String lower = fromClause.toLowerCase(Locale.ROOT);
+
+        String rest = fromClause.trim();
+        int firstJoinIdx = findFirstJoinIndex(lower);
+
+        String firstTableStr;
+        if (firstJoinIdx > 0) {
+            firstTableStr = fromClause.substring(0, firstJoinIdx).trim();
+            rest = fromClause.substring(firstJoinIdx).trim();
+        } else {
+            firstTableStr = fromClause.trim();
+            rest = "";
+        }
+
+        TableRef mainTable = parseTableRef(firstTableStr);
+        if (mainTable != null) {
+            mainTable.joinType = "inner";
+            tables.add(mainTable);
+        }
+
+        while (!rest.isEmpty()) {
+            lower = rest.toLowerCase(Locale.ROOT);
+            String joinType = "inner";
+            int joinIdx = -1;
+
+            if (lower.startsWith("left join ") || lower.startsWith("left outer join ")) {
+                joinType = "left";
+                joinIdx = lower.startsWith("left outer join ") ? 15 : 9;
+            } else if (lower.startsWith("right join ") || lower.startsWith("right outer join ")) {
+                joinType = "right";
+                joinIdx = lower.startsWith("right outer join ") ? 16 : 10;
+            } else if (lower.startsWith("inner join ") || lower.startsWith("join ")) {
+                joinType = "inner";
+                joinIdx = lower.startsWith("inner join ") ? 10 : 4;
+            }
+
+            if (joinIdx < 0) break;
+
+            rest = rest.substring(joinIdx).trim();
+
+            int onIdx = findKeywordIndex(rest, "on", 0);
+            if (onIdx < 0) break;
+
+            String tableStr = rest.substring(0, onIdx).trim();
+            String onClause = rest.substring(onIdx + 2).trim();
+
+            int nextJoinIdx = findFirstJoinIndex(onClause.toLowerCase(Locale.ROOT));
+            if (nextJoinIdx > 0) {
+                rest = onClause.substring(nextJoinIdx).trim();
+                onClause = onClause.substring(0, nextJoinIdx).trim();
+            } else {
+                rest = "";
+            }
+
+            TableRef t = parseTableRef(tableStr);
+            if (t != null) {
+                t.joinType = joinType;
+                parseJoinCondition(onClause, t);
+                tables.add(t);
+            }
+        }
+
+        return tables;
+    }
+
+    private static int findFirstJoinIndex(String lower) {
+        int[] indices = {
+                lower.indexOf(" left join "),
+                lower.indexOf(" left outer join "),
+                lower.indexOf(" right join "),
+                lower.indexOf(" right outer join "),
+                lower.indexOf(" inner join "),
+                lower.indexOf(" join ")
+        };
+        int min = -1;
+        for (int idx : indices) {
+            if (idx >= 0 && (min < 0 || idx < min)) {
+                min = idx;
+            }
+        }
+        return min;
+    }
+
+    private static TableRef parseTableRef(String str) {
+        str = str.trim();
+        if (str.isEmpty()) return null;
+
+        String[] parts = str.split("\\s+");
+        TableRef t = new TableRef();
+        t.name = stripQuotes(parts[0]);
+        if (parts.length >= 2) {
+            if (parts[1].equalsIgnoreCase("as") && parts.length >= 3) {
+                t.alias = parts[2];
+            } else if (!parts[1].equalsIgnoreCase("on")) {
+                t.alias = parts[1];
+            }
+        }
+        return t;
+    }
+
+    private static void parseJoinCondition(String onClause, TableRef t) {
+        onClause = onClause.trim();
+        String[] sides = onClause.split("\\s*=\\s*");
+        if (sides.length == 2) {
+            String left = stripQuotes(sides[0].trim());
+            String right = stripQuotes(sides[1].trim());
+            t.joinLeftColumn = left;
+            t.joinRightColumn = right.contains(".") ? right.substring(right.indexOf('.') + 1) : right;
+        }
+    }
+
+    private static class TableRef {
+        String name;
+        String alias;
+        String joinType;
+        String joinLeftColumn;
+        String joinRightColumn;
+    }
+
+    private static String stripTablePrefix(String column, String defaultAlias) {
+        int dotIdx = column.indexOf('.');
+        if (dotIdx > 0) {
+            return column.substring(dotIdx + 1);
+        }
+        return column;
+    }
+
+    private static boolean matchConditionsJoin(Map<String, Object> doc, List<Condition> conditions) {
+        for (Condition c : conditions) {
+            Object val = doc.get(c.column);
+            if (val == null) {
+                val = doc.get(stripTablePrefix(c.column, null));
+            }
+            String valStr = String.valueOf(val != null ? val : "");
+            String cmpVal = c.value;
+            try {
+                double dv = Double.parseDouble(valStr);
+                double dc = Double.parseDouble(cmpVal);
+                switch (c.operator) {
+                    case "=":
+                        if (dv != dc) return false;
+                        break;
+                    case "!=":
+                    case "<>":
+                        if (dv == dc) return false;
+                        break;
+                    case ">":
+                        if (dv <= dc) return false;
+                        break;
+                    case "<":
+                        if (dv >= dc) return false;
+                        break;
+                    case ">=":
+                        if (dv < dc) return false;
+                        break;
+                    case "<=":
+                        if (dv > dc) return false;
+                        break;
+                    case "LIKE":
+                        String pattern = cmpVal.replace("%", ".*").replace("_", ".");
+                        if (!valStr.matches("(?i)" + pattern)) return false;
+                        break;
+                    default:
+                        if (!valStr.equals(cmpVal)) return false;
+                }
+            } catch (NumberFormatException e) {
+                switch (c.operator) {
+                    case "=":
+                        if (!valStr.equals(cmpVal)) return false;
+                        break;
+                    case "!=":
+                    case "<>":
+                        if (valStr.equals(cmpVal)) return false;
+                        break;
+                    case "LIKE":
+                        String pattern = cmpVal.replace("%", ".*").replace("_", ".");
+                        if (!valStr.matches("(?i)" + pattern)) return false;
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+        return true;
     }
 
     private static class Condition {
@@ -989,11 +1459,31 @@ public class MysqlProtocolServer {
     }
 
     private static List<Condition> parseWhereConditions(String clause) {
+        return parseWhereConditions(clause, null);
+    }
+
+    private static List<Condition> parseWhereConditions(String clause, String defaultTableAlias) {
         List<Condition> conditions = new ArrayList<>();
         String[] parts = clause.split("\\s+(?i)and\\s+");
         for (String part : parts) {
             part = part.trim();
             if (part.isEmpty()) continue;
+
+            String lowerPart = part.toLowerCase(Locale.ROOT);
+            if (lowerPart.matches("^\\d+\\s*=\\s*\\d+")) {
+                String[] eqParts = part.split("\\s*=\\s*");
+                if (eqParts.length == 2) {
+                    try {
+                        int left = Integer.parseInt(eqParts[0].trim());
+                        int right = Integer.parseInt(eqParts[1].trim());
+                        if (left == right) {
+                            continue;
+                        }
+                    } catch (NumberFormatException e) {
+                        // 不是纯数字比较，继续处理
+                    }
+                }
+            }
 
             String[] ops = {">=", "<=", "!=", "<>", ">", "<", " LIKE ", " like ", "="};
             boolean found = false;
@@ -1001,6 +1491,7 @@ public class MysqlProtocolServer {
                 int idx = part.toLowerCase(Locale.ROOT).indexOf(op.toLowerCase(Locale.ROOT));
                 if (idx > 0) {
                     String col = stripQuotes(part.substring(0, idx).trim());
+                    col = stripTablePrefix(col, defaultTableAlias);
                     String val = stripSurroundingQuotes(part.substring(idx + op.length()).trim());
                     conditions.add(new Condition(col, op.trim().toUpperCase(Locale.ROOT), val));
                     found = true;

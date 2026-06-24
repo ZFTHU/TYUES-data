@@ -1,5 +1,7 @@
 # TYUES-data Database
 
+> **Current Version: 3.0.36**
+
 TYUES-data is a high-performance self-developed document database system with protocol adapters for MySQL, MongoDB, and S3/MinIO, enabling seamless database migration without code changes.
 
 ## Features

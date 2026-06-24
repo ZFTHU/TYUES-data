@@ -10,7 +10,7 @@
 
 [![Java](https://img.shields.io/badge/Java-17+-green.svg)](https://adoptium.net/)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/Version-3.0.31-orange.svg)]()
+[![Version](https://img.shields.io/badge/Version-3.0.36-orange.svg)]()
 
 </div>
 

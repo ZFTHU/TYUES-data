@@ -315,3 +315,70 @@
 [mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - sendOKWithAffected: seq=1, payload_len=7, payload_hex=00000002000000
 [mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL received: clientSeq=0, length=1
 [mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - sendOKWithAffected: seq=1, payload_len=7, payload_hex=00000002000000
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL received: clientSeq=1, length=134
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - sendOKWithAffected: seq=2, payload_len=7, payload_hex=00000002000000
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL received: clientSeq=0, length=45
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL SQL: SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL SQL lower: 'set names utf8mb4 collate utf8mb4_unicode_ci'
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL isSelectShow: false
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL sending OK for DML/DDL
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL affectedRows=0, lastInsertId=0
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - sendOKWithAffected: seq=1, payload_len=7, payload_hex=00000002000000
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL received: clientSeq=0, length=9
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - sendOKWithAffected: seq=1, payload_len=7, payload_hex=00000002000000
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL received: clientSeq=0, length=1
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - sendOKWithAffected: seq=1, payload_len=7, payload_hex=00000002000000
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL received: clientSeq=1, length=134
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - sendOKWithAffected: seq=2, payload_len=7, payload_hex=00000002000000
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL received: clientSeq=0, length=45
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL SQL: SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL SQL lower: 'set names utf8mb4 collate utf8mb4_unicode_ci'
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL isSelectShow: false
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL sending OK for DML/DDL
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL affectedRows=0, lastInsertId=0
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - sendOKWithAffected: seq=1, payload_len=7, payload_hex=00000002000000
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL received: clientSeq=0, length=21
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - sendOKWithAffected: seq=1, payload_len=7, payload_hex=00000002000000
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL received: clientSeq=0, length=21
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - sendOKWithAffected: seq=1, payload_len=7, payload_hex=00000002000000
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL received: clientSeq=0, length=36
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - sendOKWithAffected: seq=1, payload_len=7, payload_hex=00000002000000
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL received: clientSeq=0, length=44
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - sendOKWithAffected: seq=1, payload_len=7, payload_hex=00000002000000
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL received: clientSeq=0, length=1
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - sendOKWithAffected: seq=1, payload_len=7, payload_hex=00000002000000
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL received: clientSeq=1, length=134
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - sendOKWithAffected: seq=2, payload_len=7, payload_hex=00000002000000
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL received: clientSeq=0, length=45
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL SQL: SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL SQL lower: 'set names utf8mb4 collate utf8mb4_unicode_ci'
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL isSelectShow: false
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL sending OK for DML/DDL
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL affectedRows=0, lastInsertId=0
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - sendOKWithAffected: seq=1, payload_len=7, payload_hex=00000002000000
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL received: clientSeq=0, length=21
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL SQL: SELECT 1 as test_val
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL SQL lower: 'select 1 as test_val'
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL isSelectShow: true
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL sending result set for SELECT/SHOW
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - sendOKWithAffected: seq=1, payload_len=7, payload_hex=00000002000000
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL received: clientSeq=0, length=21
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL SQL: SELECT 1 as test_val
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL SQL lower: 'select 1 as test_val'
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL isSelectShow: true
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL sending result set for SELECT/SHOW
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - sendOKWithAffected: seq=1, payload_len=7, payload_hex=00000002000000
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL received: clientSeq=0, length=36
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL SQL: SELECT 1 as test_val UNION SELECT 2
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL SQL lower: 'select 1 as test_val union select 2'
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL isSelectShow: true
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL sending result set for SELECT/SHOW
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - sendOKWithAffected: seq=1, payload_len=7, payload_hex=00000002000000
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL received: clientSeq=0, length=44
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL SQL: SELECT '你好，世界！' as chinese_test
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL SQL lower: 'select '你好，世界！' as chinese_test'
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL isSelectShow: true
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL sending result set for SELECT/SHOW
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - sendOKWithAffected: seq=1, payload_len=7, payload_hex=00000002000000
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - MySQL received: clientSeq=0, length=1
+[mysql-protocol-1] INFO com.typui.database.adapter.MysqlProtocolServer - sendOKWithAffected: seq=1, payload_len=7, payload_hex=00000002000000
